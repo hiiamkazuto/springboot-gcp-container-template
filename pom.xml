@@ -32,6 +32,7 @@
 		<java.version>25</java.version>
 		<spring-cloud-gcp.version>7.4.0</spring-cloud-gcp.version>
 		<spring-cloud.version>2025.0.0</spring-cloud.version>
+		<opentelemetry-instrumentation.version>2.21.0</opentelemetry-instrumentation.version>
 	</properties>
 
 	<dependencyManagement>
@@ -50,6 +51,17 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<!--
+				Spring Bootが管理するデフォルトのOpenTelemetryのバージョンを上書きするためにBOMをインポートする
+				これにより、sun.misc.Unsafeに関する警告の解消を目指す
+			-->
+			<dependency>
+				<groupId>io.opentelemetry.instrumentation</groupId>
+				<artifactId>opentelemetry-instrumentation-bom</artifactId>
+				<version>${opentelemetry-instrumentation.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -65,6 +77,10 @@
 		<dependency>
 			<groupId>com.google.cloud</groupId>
 			<artifactId>spring-cloud-gcp-starter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-tracing-bridge-otel</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
