@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- 'local'プロファイルが有効な場合の設定（ローカル開発環境など） -->
+    <springProfile name="local">
+        <!-- Spring BootのデフォルトLogback設定（ログレベルやパターンの変数定義など）を読み込む -->
+        <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+        <!-- 標準的なコンソール出力用のAppender定義（名前は CONSOLE）を読み込む -->
+        <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+
+        <!-- rootロガーのレベルをINFOに設定し、出力先として標準のコンソールAppender(CONSOLE)を指定する -->
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+
+    <!-- 'local'プロファイル以外が有効な場合の設定（dev, stg, prod環境など） -->
+    <springProfile name="!local">
+        <!-- 構造化ロギングのため、JSON形式でコンソール出力するAppenderを新たに定義する -->
+        <appender name="CONSOLE_JSON" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+                <!-- ログをJSON形式にフォーマットするため、Google CloudのStackdriverJsonLayoutを使用する -->
+                <layout class="com.google.cloud.spring.logging.StackdriverJsonLayout" />
+            </encoder>
+        </appender>
+
+        <!-- rootロガーのレベルをINFOに設定し、出力先として上記で定義したJSONコンソールAppender(CONSOLE_JSON)を指定する -->
+        <root level="INFO">
+            <appender-ref ref="CONSOLE_JSON" />
+        </root>
+    </springProfile>
+</configuration>
